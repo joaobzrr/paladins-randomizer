@@ -1,0 +1,358 @@
+{
+  "champions": [
+    {
+      "id": "1",
+      "imagePath": "Champion_Ash_Icon.webp",
+      "name": "Ash",
+      "classId": "3"
+    },
+    {
+      "id": "2",
+      "imagePath": "Champion_Atlas_Icon.webp",
+      "name": "Atlas",
+      "classId": "3"
+    },
+    {
+      "id": "3",
+      "imagePath": "Champion_Azaan_Icon.webp",
+      "name": "Azaan",
+      "classId": "3"
+    },
+    {
+      "id": "4",
+      "imagePath": "Champion_Barik_Icon.webp",
+      "name": "Barik",
+      "classId": "3"
+    },
+    {
+      "id": "5",
+      "imagePath": "Champion_BettyLaBomba_Icon.webp",
+      "name": "Betty La Bomba",
+      "classId": "1"
+    },
+    {
+      "id": "6",
+      "imagePath": "Champion_BombKing_Icon.webp",
+      "name": "Bomb King",
+      "classId": "1"
+    },
+    {
+      "id": "7",
+      "imagePath": "Champion_Buck_Icon.webp",
+      "name": "Buck",
+      "classId": "2"
+    },
+    {
+      "id": "8",
+      "imagePath": "Champion_Caspian_Icon.webp",
+      "name": "Caspian",
+      "classId": "2"
+    },
+    {
+      "id": "9",
+      "imagePath": "Champion_Cassie_Icon.webp",
+      "name": "Cassie",
+      "classId": "1"
+    },
+    {
+      "id": "10",
+      "imagePath": "Champion_Corvus_Icon.webp",
+      "name": "Corvus",
+      "classId": "4"
+    },
+    {
+      "id": "11",
+      "imagePath": "Champion_Dredge_Icon.webp",
+      "name": "Dredge",
+      "classId": "1"
+    },
+    {
+      "id": "12",
+      "imagePath": "Champion_Drogoz_Icon.webp",
+      "name": "Drogoz",
+      "classId": "1"
+    },
+    {
+      "id": "13",
+      "imagePath": "Champion_Evie_Icon.webp",
+      "name": "Evie",
+      "classId": "2"
+    },
+    {
+      "id": "14",
+      "imagePath": "Champion_Fernando_Icon.webp",
+      "name": "Fernando",
+      "classId": "3"
+    },
+    {
+      "id": "15",
+      "imagePath": "Champion_Furia_Icon.webp",
+      "name": "Furia",
+      "classId": "4"
+    },
+    {
+      "id": "16",
+      "imagePath": "Champion_Grohk_Icon.webp",
+      "name": "Grohk",
+      "classId": "4"
+    },
+    {
+      "id": "17",
+      "imagePath": "Champion_Grover_Icon.webp",
+      "name": "Grover",
+      "classId": "4"
+    },
+    {
+      "id": "18",
+      "imagePath": "Champion_Imani_Icon.webp",
+      "name": "Imani",
+      "classId": "1"
+    },
+    {
+      "id": "19",
+      "imagePath": "Champion_Inara_Icon.webp",
+      "name": "Inara",
+      "classId": "3"
+    },
+    {
+      "id": "20",
+      "imagePath": "Champion_Io_Icon.webp",
+      "name": "Io",
+      "classId": "4"
+    },
+    {
+      "id": "21",
+      "imagePath": "Champion_Jenos_Icon.webp",
+      "name": "Jenos",
+      "classId": "4"
+    },
+    {
+      "id": "22",
+      "imagePath": "Champion_Kasumi_Icon.webp",
+      "name": "Kasumi",
+      "classId": "2"
+    },
+    {
+      "id": "23",
+      "imagePath": "Champion_Khan_Icon.webp",
+      "name": "Khan",
+      "classId": "3"
+    },
+    {
+      "id": "24",
+      "imagePath": "Champion_Kinessa_Icon.webp",
+      "name": "Kinessa",
+      "classId": "1"
+    },
+    {
+      "id": "25",
+      "imagePath": "Champion_Koga_Icon.webp",
+      "name": "Koga",
+      "classId": "2"
+    },
+    {
+      "id": "26",
+      "imagePath": "Champion_Lex_Icon.webp",
+      "name": "Lex",
+      "classId": "2"
+    },
+    {
+      "id": "27",
+      "imagePath": "Champion_Lian_Icon.webp",
+      "name": "Lian",
+      "classId": "1"
+    },
+    {
+      "id": "28",
+      "imagePath": "Champion_Lillith_Icon.webp",
+      "name": "Lillith",
+      "classId": "4"
+    },
+    {
+      "id": "29",
+      "imagePath": "Champion_Maeve_Icon.webp",
+      "name": "Maeve",
+      "classId": "2"
+    },
+    {
+      "id": "30",
+      "imagePath": "Champion_Makoa_Icon.webp",
+      "name": "Makoa",
+      "classId": "3"
+    },
+    {
+      "id": "31",
+      "imagePath": "Champion_MalDamba_Icon.webp",
+      "name": "Mal'Damba",
+      "classId": "4"
+    },
+    {
+      "id": "32",
+      "imagePath": "Champion_Moji_Icon.webp",
+      "name": "Moji",
+      "classId": "2"
+    },
+    {
+      "id": "33",
+      "imagePath": "Champion_Nyx_Icon.webp",
+      "name": "Nyx",
+      "classId": "3"
+    },
+    {
+      "id": "34",
+      "imagePath": "Champion_Octavia_Icon.webp",
+      "name": "Octavia",
+      "classId": "1"
+    },
+    {
+      "id": "35",
+      "imagePath": "Champion_Omen_Icon.webp",
+      "name": "Omen",
+      "classId": "1"
+    },
+    {
+      "id": "36",
+      "imagePath": "Champion_Pip_Icon.webp",
+      "name": "Pip",
+      "classId": "4"
+    },
+    {
+      "id": "37",
+      "imagePath": "Champion_Raum_Icon.webp",
+      "name": "Raum",
+      "classId": "3"
+    },
+    {
+      "id": "38",
+      "imagePath": "Champion_Rei_Icon.webp",
+      "name": "Rei",
+      "classId": "4"
+    },
+    {
+      "id": "39",
+      "imagePath": "Champion_Ruckus_Icon.webp",
+      "name": "Ruckus",
+      "classId": "3"
+    },
+    {
+      "id": "40",
+      "imagePath": "Champion_Saati_Icon.webp",
+      "name": "Saati",
+      "classId": "1"
+    },
+    {
+      "id": "41",
+      "imagePath": "Champion_Seris_Icon.webp",
+      "name": "Seris",
+      "classId": "4"
+    },
+    {
+      "id": "42",
+      "imagePath": "Champion_ShaLin_Icon.webp",
+      "name": "Sha Lin",
+      "classId": "1"
+    },
+    {
+      "id": "43",
+      "imagePath": "Champion_Skye_Icon.webp",
+      "name": "Skye",
+      "classId": "2"
+    },
+    {
+      "id": "44",
+      "imagePath": "Champion_Strix_Icon.webp",
+      "name": "Strix",
+      "classId": "1"
+    },
+    {
+      "id": "45",
+      "imagePath": "Champion_Talus_Icon.webp",
+      "name": "Talus",
+      "classId": "2"
+    },
+    {
+      "id": "46",
+      "imagePath": "Champion_Terminus_Icon.webp",
+      "name": "Terminus",
+      "classId": "3"
+    },
+    {
+      "id": "47",
+      "imagePath": "Champion_Tiberius_Icon.webp",
+      "name": "Tiberius",
+      "classId": "1"
+    },
+    {
+      "id": "48",
+      "imagePath": "Champion_Torvald_Icon.webp",
+      "name": "Torvald",
+      "classId": "3"
+    },
+    {
+      "id": "49",
+      "imagePath": "Champion_Tyra_Icon.webp",
+      "name": "Tyra",
+      "classId": "1"
+    },
+    {
+      "id": "50",
+      "imagePath": "Champion_Vatu_Icon.webp",
+      "name": "Vatu",
+      "classId": "2"
+    },
+    {
+      "id": "51",
+      "imagePath": "Champion_VII_Icon.webp",
+      "name": "VII",
+      "classId": "2"
+    },
+    {
+      "id": "52",
+      "imagePath": "Champion_Viktor_Icon.webp",
+      "name": "Viktor",
+      "classId": "1"
+    },
+    {
+      "id": "53",
+      "imagePath": "Champion_Vivian_Icon.webp",
+      "name": "Vivian",
+      "classId": "1"
+    },
+    {
+      "id": "54",
+      "imagePath": "Champion_Vora_Icon.webp",
+      "name": "Vora",
+      "classId": "2"
+    },
+    {
+      "id": "55",
+      "imagePath": "Champion_Willo_Icon.webp",
+      "name": "Willo",
+      "classId": "1"
+    },
+    {
+      "id": "56",
+      "imagePath": "Champion_Yagorath_Icon.webp",
+      "name": "Yagorath",
+      "classId": "3"
+    },
+    {
+      "id": "57",
+      "imagePath": "Champion_Ying_Icon.webp",
+      "name": "Ying",
+      "classId": "4"
+    },
+    {
+      "id": "58",
+      "imagePath": "Champion_Zhin_Icon.webp",
+      "name": "Zhin",
+      "classId": "2"
+    },
+    {
+      "id": "59",
+      "imagePath": "Champion_Androxus_Icon.webp",
+      "name": "Androxus",
+      "classId": "2"
+    }
+  ]
+}
