@@ -1,5 +1,13 @@
 import { Champion, ChampionRow, ChampionFilters } from "@/types";
 
+export function makeChampion(champion: ChampionRow) {
+  return {
+    ...champion,
+    removed: false,
+    disabled: false
+  };
+}
+
 export function findChampionById(champions: Champion[], id: string) {
   return champions.find((champion) => champion.id === id);
 }
@@ -30,10 +38,12 @@ export function filterChampions(
   });
 }
 
-export function makeChampion(champion: ChampionRow) {
-  return {
-    ...champion,
-    removed: false,
-    disabled: false
-  };
+export function sortChampionRows(champions: ChampionRow[]) {
+  return [...champions].sort((champion1, champion2) => {
+    if (champion1.classId === champion2.classId) {
+      return champion1.name.localeCompare(champion2.name);
+    } else {
+      return champion1.classId.localeCompare(champion2.classId);
+    }
+  })
 }

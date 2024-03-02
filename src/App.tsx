@@ -1,4 +1,5 @@
 import {
+  createMemo,
   onMount,
   onCleanup,
   splitProps,
@@ -69,9 +70,8 @@ function App() {
 
 function Randomizer() {
   const store = useAppStore();
-
-  const includedChampions = () => store.champions({ removed: false });
-  const excludedChampions = () => store.champions({ removed: true });
+  const includedChampions = store.champions({ removed: false });
+  const excludedChampions = store.champions({ removed: true });
 
   return (
     <div class="flex h-full items-center justify-center overflow-auto">
@@ -89,8 +89,6 @@ type ChampionListProps = {
 };
 
 const ChampionList: Component<ChampionListProps> = (props) => {
-  const store = useAppStore();
-
   return (
     <div class="rounded-md bg-primary/10 ">
       <h2 class="p-4">{props.title}</h2>
@@ -102,30 +100,7 @@ const ChampionList: Component<ChampionListProps> = (props) => {
           <div class="grid auto-rows-[--grid-button-width] grid-cols-[repeat(var(--grid-columns),var(--grid-button-width))]">
             <For each={props.champions}>
               {(champion) => (
-                <div class="relative">
-                  <button
-                    class="h-full w-full p-[--grid-button-padding]"
-                    onMouseDown={(event) => {
-                      if (event.button !== 0) return;
-                      store.shiftChampionById(champion.id, !champion.removed);
-                    }}
-                    onMouseEnter={() =>
-                      store.setSelectionSourceChampionId(champion.id)
-                    }
-                    onMouseLeave={store.clearSelectionSource}
-                  >
-                    <ChampionImage champion={champion} />
-                  </button>
-                  <div class="pointer-events-none absolute left-0 top-0 h-full w-full p-[--grid-button-overlay-padding]">
-                    <div
-                      class="h-full rounded-md border-primary"
-                      classList={{
-                        "border-[length:--grid-button-border-width]":
-                          store.selectedChampions.includes(champion)
-                      }}
-                    />
-                  </div>
-                </div>
+                <ChampionButton champion={champion} />
               )}
             </For>
           </div>
@@ -134,6 +109,65 @@ const ChampionList: Component<ChampionListProps> = (props) => {
     </div>
   );
 };
+
+const ChampionButton: Component<{ champion: Champion }> = (props) => {
+  const store = useAppStore();
+
+  const isChampionSelected = createMemo(() => store.selectedChampions.includes(props.champion));
+
+  const onMouseDown = (event: MouseEvent) => {
+    if (event.button !== 0) return;
+
+    if (store.keyboardState.ctrl) {
+      if (store.keyboardState.shift) {
+        store.toggleChampionByClassId(props.champion.classId, !props.champion.disabled);
+      } else {
+        store.toggleChampionById(props.champion.id, !props.champion.disabled);
+      }
+    } else {
+      if (store.keyboardState.shift) {
+        store.shiftChampionsByClassId(props.champion.classId, !props.champion.removed);
+      } else {
+        store.shiftChampionById(props.champion.id, !props.champion.removed);
+      }
+    }
+  }
+
+  const onMouseEnter = () => {
+    store.setSelectionSourceChampionId(props.champion.id)
+  }
+
+  const onMouseLeave = () => {
+    store.clearSelectionSource();
+  }
+
+  return (
+    <button
+      class="relative h-full w-full p-[--grid-button-padding]"
+      onMouseDown={onMouseDown}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+    >
+      <div
+        class={cn(
+          "border-[length:--grid-button-border-width] rounded-md",
+          {
+            "border-red-500": isChampionSelected() && store.keyboardState.ctrl,
+            "border-primary": isChampionSelected() && !store.keyboardState.ctrl,
+            "border-transparent": !isChampionSelected()
+          }
+        )}
+      >
+        <ChampionImage
+          champion={props.champion}
+          class={cn("transition-[filter] rounded-md", {
+            "grayscale": props.champion.disabled
+          })}
+        />
+      </div>
+    </button>
+  );
+}
 
 type ChampionImageProps = {
   champion: ChampionRow;

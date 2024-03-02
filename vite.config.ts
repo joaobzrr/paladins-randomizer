@@ -4,19 +4,17 @@ import solid from 'vite-plugin-solid'
 import devtools from 'solid-devtools/vite'
 
 // https://vitejs.dev/config/
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   plugins: [
-    devtools({
-      autoname: true
-    }),
+    devtools({ autoname: true }),
     solid()
   ],
   build: {
-    minify: true
+    minify: mode === "production"
   },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },
   },
-})
+}));

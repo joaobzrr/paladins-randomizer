@@ -4,12 +4,13 @@ import { champions as championData } from "@/data/champions.json";
 import {
   makeChampion,
   findChampionById,
-  filterChampions
+  filterChampions,
+  sortChampionRows
 } from "@/lib/champions";
 import { ChampionFilters } from "@/types";
 
 const [appState, setAppState] = createStore({
-  champions: championData.map((row) => makeChampion(row)),
+  champions: sortChampionRows(championData).map((row) => makeChampion(row)),
   hoveredChampionId: undefined as string | undefined,
   keyboardState: {
     ctrl: false,
@@ -42,7 +43,7 @@ const store = {
     return appState.keyboardState;
   },
   champions: (filters?: Partial<ChampionFilters>) => {
-    return filterChampions(appState.champions, filters);
+    return () => filterChampions(appState.champions, filters);
   },
   setSelectionSourceChampionId: (championId: string) => {
     setAppState("hoveredChampionId", championId);
@@ -58,7 +59,31 @@ const store = {
       "champions",
       (champion) => champion.id === championId,
       "removed",
-      () => removed
+      removed
+    );
+  },
+  shiftChampionsByClassId: (classId: string, removed: boolean) => {
+    setAppState(
+      "champions",
+      (champion) => champion.classId === classId,
+      "removed",
+      removed
+    );
+  },
+  toggleChampionById: (championId: string, disabled: boolean) => {
+    setAppState(
+      "champions",
+      (champion) => champion.id === championId,
+      "disabled",
+      disabled
+    );
+  },
+  toggleChampionByClassId: (classId: string, disabled: boolean) => {
+    setAppState(
+      "champions",
+      (champion) => champion.classId === classId,
+      "disabled",
+      disabled
     );
   }
 };
