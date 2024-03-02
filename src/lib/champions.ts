@@ -1,17 +1,33 @@
 import { Champion, ChampionRow, ChampionFilters } from "@/types";
 
-export function filterChampions(champions: Champion[], filters?: Partial<ChampionFilters>) {
+export function findChampionById(champions: Champion[], id: string) {
+  return champions.find((champion) => champion.id === id);
+}
+
+export function filterChampions(
+  champions: Champion[],
+  filters?: Partial<ChampionFilters>
+) {
   return champions.filter((champion) => {
-    if (filters?.classId !== undefined && champion.classId !== filters.classId) {
+    if (
+      filters?.classId !== undefined &&
+      champion.classId !== filters.classId
+    ) {
       return false;
-    } else if (filters?.removed !== undefined && champion.removed !== filters.removed) {
+    } else if (
+      filters?.removed !== undefined &&
+      champion.removed !== filters.removed
+    ) {
       return false;
-    } else if (filters?.disabled !== undefined && champion.disabled !== filters.disabled) {
+    } else if (
+      filters?.disabled !== undefined &&
+      champion.disabled !== filters.disabled
+    ) {
       return false;
     } else {
       return true;
     }
-  })
+  });
 }
 
 export function makeChampion(champion: ChampionRow) {

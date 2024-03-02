@@ -1,7 +1,11 @@
-import { createMemo, createContext, useContext } from "solid-js";
+import { createContext, useContext } from "solid-js";
 import { createStore } from "solid-js/store";
 import { champions as championData } from "@/data/champions.json";
-import { makeChampion, filterChampions } from "@/lib/champions";
+import {
+  makeChampion,
+  findChampionById,
+  filterChampions
+} from "@/lib/champions";
 import { ChampionFilters } from "@/types";
 
 const [appState, setAppState] = createStore({
@@ -19,8 +23,9 @@ const store = {
       return [];
     }
 
-    const selectionSourceChampion = appState.champions.find(
-      (champion) => champion.id === appState.hoveredChampionId
+    const selectionSourceChampion = findChampionById(
+      appState.champions,
+      appState.hoveredChampionId
     );
     if (!selectionSourceChampion) {
       throw new Error("Unexpected error");
@@ -37,7 +42,7 @@ const store = {
     return appState.keyboardState;
   },
   champions: (filters?: Partial<ChampionFilters>) => {
-    return createMemo(() => filterChampions(appState.champions, filters));
+    return filterChampions(appState.champions, filters);
   },
   setSelectionSourceChampionId: (championId: string) => {
     setAppState("hoveredChampionId", championId);
@@ -45,7 +50,7 @@ const store = {
   clearSelectionSource: () => {
     setAppState("hoveredChampionId", undefined);
   },
-  setKeyboardState(partial: Partial<typeof appState["keyboardState"]>) {
+  setKeyboardState(partial: Partial<(typeof appState)["keyboardState"]>) {
     setAppState("keyboardState", partial);
   },
   shiftChampionById: (championId: string, removed: boolean) => {
@@ -56,7 +61,7 @@ const store = {
       () => removed
     );
   }
-}
+};
 
 export const StoreContext = createContext(store);
 export const useAppStore = () => useContext(StoreContext);
