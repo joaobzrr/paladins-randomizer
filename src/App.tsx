@@ -70,8 +70,8 @@ function App() {
 
 function Randomizer() {
   const store = useAppStore();
-  const includedChampions = store.champions({ removed: false });
-  const excludedChampions = store.champions({ removed: true });
+  const includedChampions = store.createChampions({ removed: false });
+  const excludedChampions = store.createChampions({ removed: true });
 
   return (
     <div class="flex h-full items-center justify-center overflow-auto">
@@ -99,9 +99,7 @@ const ChampionList: Component<ChampionListProps> = (props) => {
         <div class="p-4 pt-0">
           <div class="grid auto-rows-[--grid-button-width] grid-cols-[repeat(var(--grid-columns),var(--grid-button-width))]">
             <For each={props.champions}>
-              {(champion) => (
-                <ChampionButton champion={champion} />
-              )}
+              {(champion) => <ChampionButton champion={champion} />}
             </For>
           </div>
         </div>
@@ -113,33 +111,41 @@ const ChampionList: Component<ChampionListProps> = (props) => {
 const ChampionButton: Component<{ champion: Champion }> = (props) => {
   const store = useAppStore();
 
-  const isChampionSelected = createMemo(() => store.selectedChampions.includes(props.champion));
+  const isChampionSelected = createMemo(() =>
+    store.selectedChampions.includes(props.champion)
+  );
 
   const onMouseDown = (event: MouseEvent) => {
     if (event.button !== 0) return;
 
     if (store.keyboardState.ctrl) {
       if (store.keyboardState.shift) {
-        store.toggleChampionByClassId(props.champion.classId, !props.champion.disabled);
+        store.toggleChampionByClassId(
+          props.champion.classId,
+          !props.champion.disabled
+        );
       } else {
         store.toggleChampionById(props.champion.id, !props.champion.disabled);
       }
     } else {
       if (store.keyboardState.shift) {
-        store.shiftChampionsByClassId(props.champion.classId, !props.champion.removed);
+        store.shiftChampionsByClassId(
+          props.champion.classId,
+          !props.champion.removed
+        );
       } else {
         store.shiftChampionById(props.champion.id, !props.champion.removed);
       }
     }
-  }
+  };
 
   const onMouseEnter = () => {
-    store.setSelectionSourceChampionId(props.champion.id)
-  }
+    store.setSelectionSourceChampionId(props.champion.id);
+  };
 
   const onMouseLeave = () => {
     store.clearSelectionSource();
-  }
+  };
 
   return (
     <button
@@ -149,25 +155,22 @@ const ChampionButton: Component<{ champion: Champion }> = (props) => {
       onMouseLeave={onMouseLeave}
     >
       <div
-        class={cn(
-          "border-[length:--grid-button-border-width] rounded-md",
-          {
-            "border-red-500": isChampionSelected() && store.keyboardState.ctrl,
-            "border-primary": isChampionSelected() && !store.keyboardState.ctrl,
-            "border-transparent": !isChampionSelected()
-          }
-        )}
+        class={cn("rounded-md border-[length:--grid-button-border-width]", {
+          "border-red-500": isChampionSelected() && store.keyboardState.ctrl,
+          "border-primary": isChampionSelected() && !store.keyboardState.ctrl,
+          "border-transparent": !isChampionSelected()
+        })}
       >
         <ChampionImage
           champion={props.champion}
-          class={cn("transition-[filter] rounded-md", {
-            "grayscale": props.champion.disabled
+          class={cn("rounded-md transition-[filter]", {
+            grayscale: props.champion.disabled
           })}
         />
       </div>
     </button>
   );
-}
+};
 
 type ChampionImageProps = {
   champion: ChampionRow;

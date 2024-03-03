@@ -45,5 +45,5 @@ export function sortChampionRows(champions: ChampionRow[]) {
     } else {
       return champion1.classId.localeCompare(champion2.classId);
     }
-  })
+  });
 }

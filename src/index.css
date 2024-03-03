@@ -14,9 +14,8 @@
     --grid-button-padding: 3px;
     --grid-button-border-width: 2px;
     --grid-button-width: calc(
-      var(--grid-image-width)
-      + var(--grid-button-padding) * 2
-      + var(--grid-button-border-width) * 2
+      var(--grid-image-width) + var(--grid-button-padding) * 2 +
+        var(--grid-button-border-width) * 2
     );
     --grid-width: calc(var(--grid-columns) * var(--grid-button-width));
     --grid-button-overlay-padding: calc(

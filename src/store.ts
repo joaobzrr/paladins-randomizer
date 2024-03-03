@@ -42,8 +42,16 @@ const store = {
   get keyboardState() {
     return appState.keyboardState;
   },
-  champions: (filters?: Partial<ChampionFilters>) => {
-    return () => filterChampions(appState.champions, filters);
+  createChampions: (filters?: Partial<ChampionFilters>) => {
+    // @Note If we return the function directly, the linter complains with:
+    //
+    // This function should be passed to a tracked scope (like createEffect)
+    // or an event handler because it contains reactivity, or else changes
+    // will be ignored.
+    //
+    // To avoid this, we first assign the function to a variable then return it.
+    const derivedChampions = () => filterChampions(appState.champions, filters);
+    return derivedChampions;
   },
   setSelectionSourceChampionId: (championId: string) => {
     setAppState("hoveredChampionId", championId);
