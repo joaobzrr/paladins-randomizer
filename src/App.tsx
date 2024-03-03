@@ -1,7 +1,7 @@
 import {
-  createMemo,
   onMount,
   onCleanup,
+  createMemo,
   splitProps,
   For,
   Show,
@@ -10,21 +10,22 @@ import {
 } from "solid-js";
 import { Image } from "@/components/image";
 import { Skeleton } from "@/components/skeleton";
+import { filterChampions } from "@/lib/champions";
 import { cn, makeAssetURL } from "@/lib/utils";
 import { Champion, ChampionRow } from "@/types";
-import { useAppStore, StoreContext } from "./store";
+import { useAppStore, StoreProvider } from "./store";
 
 function App() {
-  const store = useAppStore();
+  const [appStoreState, appStoreActions] = useAppStore();
 
   const handleKeyDownEvent = (event: KeyboardEvent) => {
     switch (event.key) {
       case "Control": {
-        store.setKeyboardState({ ctrl: true });
+        appStoreActions.updateKeyboardState({ ctrl: true });
         break;
       }
       case "Shift": {
-        store.setKeyboardState({ shift: true });
+        appStoreActions.updateKeyboardState({ shift: true });
         break;
       }
     }
@@ -33,11 +34,11 @@ function App() {
   const handleKeyUpEvent = (event: KeyboardEvent) => {
     switch (event.key) {
       case "Control": {
-        store.setKeyboardState({ ctrl: false });
+        appStoreActions.updateKeyboardState({ ctrl: false });
         break;
       }
       case "Shift": {
-        store.setKeyboardState({ shift: false });
+        appStoreActions.updateKeyboardState({ shift: false });
         break;
       }
     }
@@ -45,7 +46,7 @@ function App() {
 
   const handleVisibilityChange = () => {
     if (document.hidden) {
-      store.setKeyboardState({ ctrl: false, shift: false });
+      appStoreActions.updateKeyboardState({ ctrl: false, shift: false });
     }
   };
 
@@ -61,25 +62,23 @@ function App() {
     window.removeEventListener("visibilitychange", handleVisibilityChange);
   });
 
-  return (
-    <StoreContext.Provider value={store}>
-      <Randomizer />
-    </StoreContext.Provider>
-  );
-}
+  const includedChampions = createMemo(() => {
+    return filterChampions(appStoreState.champions, { removed: false });
+  });
 
-function Randomizer() {
-  const store = useAppStore();
-  const includedChampions = store.createChampions({ removed: false });
-  const excludedChampions = store.createChampions({ removed: true });
+  const excludedChampions = createMemo(() => {
+    return filterChampions(appStoreState.champions, { removed: true });
+  });
 
   return (
-    <div class="flex h-full items-center justify-center overflow-auto">
-      <div class="flex h-[832px] items-start gap-x-8">
-        <ChampionList champions={excludedChampions()} title="Out" />
-        <ChampionList champions={includedChampions()} title="Pool" />
+    <StoreProvider>
+      <div class="flex h-full items-center justify-center overflow-auto">
+        <div class="flex h-[832px] items-start gap-x-8">
+          <ChampionList champions={excludedChampions()} title="Out" />
+          <ChampionList champions={includedChampions()} title="Pool" />
+        </div>
       </div>
-    </div>
+    </StoreProvider>
   );
 }
 
@@ -109,56 +108,54 @@ const ChampionList: Component<ChampionListProps> = (props) => {
 };
 
 const ChampionButton: Component<{ champion: Champion }> = (props) => {
-  const store = useAppStore();
+  const [appStoreState, appStoreActions] = useAppStore();
 
-  const isChampionSelected = createMemo(() =>
-    store.selectedChampions.includes(props.champion)
-  );
-
-  const onMouseDown = (event: MouseEvent) => {
-    if (event.button !== 0) return;
-
-    if (store.keyboardState.ctrl) {
-      if (store.keyboardState.shift) {
-        store.toggleChampionByClassId(
-          props.champion.classId,
-          !props.champion.disabled
-        );
-      } else {
-        store.toggleChampionById(props.champion.id, !props.champion.disabled);
-      }
-    } else {
-      if (store.keyboardState.shift) {
-        store.shiftChampionsByClassId(
-          props.champion.classId,
-          !props.champion.removed
-        );
-      } else {
-        store.shiftChampionById(props.champion.id, !props.champion.removed);
-      }
-    }
-  };
-
-  const onMouseEnter = () => {
-    store.setSelectionSourceChampionId(props.champion.id);
-  };
-
-  const onMouseLeave = () => {
-    store.clearSelectionSource();
-  };
+  const selected = createMemo(() => {
+    return appStoreState.selectedChampions.includes(props.champion);
+  });
 
   return (
     <button
       class="relative h-full w-full p-[--grid-button-padding]"
-      onMouseDown={onMouseDown}
-      onMouseEnter={onMouseEnter}
-      onMouseLeave={onMouseLeave}
+      onMouseDown={(event) => {
+        if (event.button !== 0) return;
+
+        if (appStoreState.keyboardState.ctrl) {
+          if (appStoreState.keyboardState.shift) {
+            appStoreActions.toggleChampionsByClassId(
+              props.champion.classId,
+              !props.champion.disabled
+            );
+          } else {
+            appStoreActions.toggleChampionById(
+              props.champion.id,
+              !props.champion.disabled
+            );
+          }
+        } else {
+          if (appStoreState.keyboardState.shift) {
+            appStoreActions.shiftChampionsByClassId(
+              props.champion.classId,
+              !props.champion.removed
+            );
+          } else {
+            appStoreActions.shiftChampionById(
+              props.champion.id,
+              !props.champion.removed
+            );
+          }
+        }
+      }}
+      onMouseEnter={() =>
+        appStoreActions.updateHoveredChampion(props.champion.id)
+      }
+      onMouseLeave={() => appStoreActions.updateHoveredChampion(undefined)}
     >
       <div
         class={cn("rounded-md border-[length:--grid-button-border-width]", {
-          "border-red-500": isChampionSelected() && store.keyboardState.ctrl,
-          "border-primary": isChampionSelected() && !store.keyboardState.ctrl,
-          "border-transparent": !isChampionSelected()
+          "border-red-500": selected() && appStoreState.keyboardState.ctrl,
+          "border-primary": selected() && !appStoreState.keyboardState.ctrl,
+          "border-transparent": !selected()
         })}
       >
         <ChampionImage
