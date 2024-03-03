@@ -91,7 +91,7 @@ type ChampionListProps = {
 const ChampionList: Component<ChampionListProps> = (props) => {
   return (
     <div class="rounded-md bg-primary/10 ">
-      <h2 class="p-4">{props.title}</h2>
+      <h2 class="p-4 font-bold">{props.title}</h2>
       <div class="px-4">
         <div class="w-[--grid-width] px-4" />
       </div>
