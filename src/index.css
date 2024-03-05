@@ -43,4 +43,18 @@
     @apply bg-background text-foreground;
     font-family: "Montserrat", sans-serif;
   }
+
+  .reel-up {
+    animation: reel-up 0.2s forwards ease-out;
+  }
+
+  @keyframes reel-up {
+    from {
+      transform: translateY(0px);
+    }
+
+    to {
+      transform: translateY(calc(var(--randomized-champion-image-width) * -1));
+    }
+  }
 }

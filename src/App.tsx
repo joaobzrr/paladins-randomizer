@@ -11,11 +11,19 @@ import { Image, ImageProps } from "@/components/image";
 import { Skeleton } from "@/components/skeleton";
 import { filterChampions } from "@/lib/champions";
 import { cn, makeAssetURL } from "@/lib/utils";
-import { Champion, ChampionRow } from "@/types";
+import { Champion } from "@/types";
 import { useAppStore, StoreProvider } from "./store";
 
 function App() {
   const [appStoreState, appStoreActions] = useAppStore();
+
+  const includedChampions = createMemo(() => {
+    return filterChampions(appStoreState.champions, { removed: false });
+  });
+
+  const excludedChampions = createMemo(() => {
+    return filterChampions(appStoreState.champions, { removed: true });
+  });
 
   const handleKeyDownEvent = (event: KeyboardEvent) => {
     switch (event.key) {
@@ -61,13 +69,15 @@ function App() {
     window.removeEventListener("visibilitychange", handleVisibilityChange);
   });
 
-  const includedChampions = createMemo(() => {
-    return filterChampions(appStoreState.champions, { removed: false });
-  });
+  let reelRef: HTMLDivElement;
 
-  const excludedChampions = createMemo(() => {
-    return filterChampions(appStoreState.champions, { removed: true });
-  });
+  const onClickRandomizeButton = () => {
+    appStoreActions.randomizeChampion();
+
+    reelRef.classList.remove("reel-up");
+    reelRef.offsetWidth;
+    reelRef.classList.add("reel-up");
+  };
 
   return (
     <StoreProvider>
@@ -76,26 +86,21 @@ function App() {
           <ChampionList champions={excludedChampions()} title="Out" />
           <ChampionList champions={includedChampions()} title="Pool" />
           <div class="mb-4 rounded-md bg-primary/10 p-4">
-            <div class="h-[--randomized-champion-image-width] w-[--randomized-champion-image-width]">
-              <Show
-                when={!!appStoreState.randomizedChampion()}
-                fallback={
-                  <Image
-                    src={makeAssetURL("images", "Champion_Default_Icon.webp")}
-                    fallback={<Skeleton class="h-full w-full rounded-md" />}
-                    class="h-full w-full rounded-md"
-                  />
-                }
+            <div class="h-[--randomized-champion-image-width] w-[--randomized-champion-image-width] overflow-hidden">
+              <div
+                class="flex -translate-y-[--randomized-champion-image-width] flex-col"
+                ref={reelRef!}
               >
-                <ChampionImage
-                  champion={appStoreState.randomizedChampion()!}
-                  fallback={<Skeleton class="h-full w-full rounded-md" />}
-                  class="h-full w-full"
+                <RandomizedChampionImage
+                  champion={appStoreState.previousChampion()}
                 />
-              </Show>
+                <RandomizedChampionImage
+                  champion={appStoreState.randomizedChampion()}
+                />
+              </div>
             </div>
             <button
-              onClick={() => appStoreActions.randomizeChampion()}
+              onClick={onClickRandomizeButton}
               class="mt-4 h-11 w-full rounded-md bg-primary/60 px-8 text-lg font-medium"
             >
               Randomize
@@ -185,7 +190,7 @@ const ChampionButton: Component<{ champion: Champion }> = (props) => {
       onMouseLeave={handleMouseLeave}
     >
       <div
-        class={cn(" rounded-md border-[length:--grid-button-border-width]", {
+        class={cn("rounded-md border-[length:--grid-button-border-width]", {
           "border-red-500": selected() && appStoreState.keyboardState.ctrl,
           "border-primary": selected() && !appStoreState.keyboardState.ctrl,
           "border-transparent": !selected()
@@ -205,8 +210,37 @@ const ChampionButton: Component<{ champion: Champion }> = (props) => {
   );
 };
 
+type RandomizedChampionImageProps = {
+  champion?: Champion;
+};
+
+const RandomizedChampionImage: Component<RandomizedChampionImageProps> = (
+  props
+) => {
+  return (
+    <div class="h-[--randomized-champion-image-width] w-[--randomized-champion-image-width]">
+      <Show
+        when={props.champion}
+        fallback={
+          <Image
+            src={makeAssetURL("images", "Champion_Default_Icon.webp")}
+            fallback={<Skeleton class="h-full w-full rounded-md" />}
+            class="h-full w-full rounded-md"
+          />
+        }
+      >
+        <ChampionImage
+          champion={props.champion!}
+          fallback={<Skeleton class="h-full w-full rounded-md" />}
+          class="h-full w-full rounded-md"
+        />
+      </Show>
+    </div>
+  );
+};
+
 type ChampionImageProps = Omit<ImageProps, "src"> & {
-  champion: ChampionRow;
+  champion: Champion;
 };
 
 const ChampionImage: Component<ChampionImageProps> = (props) => {
@@ -215,7 +249,7 @@ const ChampionImage: Component<ChampionImageProps> = (props) => {
     <Image
       src={makeAssetURL("images", custom.champion.imagePath)}
       alt={custom.champion.name}
-      class={cn(custom.class, "select-none rounded-md")}
+      class={cn("select-none rounded-md", custom.class)}
       {...rest}
     />
   );

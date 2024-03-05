@@ -19,15 +19,21 @@ import { choose } from "./lib/utils";
 // eslint-disable-next-line prefer-const
 let randomizedChampion: () => Champion | undefined;
 // eslint-disable-next-line prefer-const
+let previousChampion: () => Champion | undefined;
+// eslint-disable-next-line prefer-const
 let selectedChampions: () => Champion[];
 
 const [appStoreState, setAppStoreState] = createStore({
   champions: sortChampionRows(championData).map((row) => makeChampion(row)),
   randomizedChampionId: undefined as string | undefined,
+  previousChampionId: undefined as string | undefined,
   hoveredChampionId: undefined as string | undefined,
   keyboardState: { ctrl: false, shift: false },
   get randomizedChampion() {
     return randomizedChampion;
+  },
+  get previousChampion() {
+    return previousChampion;
   },
   get selectedChampions() {
     return selectedChampions();
@@ -38,6 +44,13 @@ const [appStoreState, setAppStoreState] = createStore({
 randomizedChampion = createMemo(() => {
   return appStoreState.champions.find(
     (champion) => champion.id === appStoreState.randomizedChampionId
+  );
+});
+
+// eslint-disable-next-line solid/reactivity
+previousChampion = createMemo(() => {
+  return appStoreState.champions.find(
+    (champion) => champion.id === appStoreState.previousChampionId
   );
 });
 
@@ -57,7 +70,10 @@ selectedChampions = createMemo(() => {
 
   if (appStoreState.keyboardState.shift) {
     return filterChampions(appStoreState.champions, {
-      classId: hoveredChampion.classId
+      classId: hoveredChampion.classId,
+      ...(!appStoreState.keyboardState.ctrl && {
+        removed: hoveredChampion.removed
+      })
     });
   }
 
@@ -71,7 +87,9 @@ const appStoreActions = {
       disabled: false
     });
     const pickedChampion = choose(choices);
-    setAppStoreState("randomizedChampionId", pickedChampion?.id);
+    const previousChampionId = appStoreState.randomizedChampionId;
+    const randomizedChampionId = pickedChampion?.id;
+    setAppStoreState({ previousChampionId, randomizedChampionId });
   },
   shiftChampionById: (championId: string, removed: boolean) => {
     setAppStoreState(
