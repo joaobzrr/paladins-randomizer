@@ -72,6 +72,10 @@ function App() {
   let reelRef: HTMLDivElement;
 
   const onClickRandomizeButton = () => {
+    if (!appStoreState.canRandomize()) {
+      return;
+    }
+
     appStoreActions.randomizeChampion();
 
     reelRef.classList.remove("reel-up");
@@ -86,7 +90,12 @@ function App() {
           <ChampionList champions={excludedChampions()} title="Out" />
           <ChampionList champions={includedChampions()} title="Pool" />
           <div class="mb-4 rounded-md bg-primary/10 p-4">
-            <div class="h-[--randomized-champion-image-width] w-[--randomized-champion-image-width] overflow-hidden">
+            <div class="mb-2 flex w-full items-center justify-between">
+              <h2 class="text-2xl font-bold">
+                {appStoreState.randomizedChampion()?.name ?? "None"}
+              </h2>
+            </div>
+            <div class="h-[--randomized-champion-image-width] w-[--randomized-champion-image-width] overflow-hidden rounded-md">
               <div
                 class="flex -translate-y-[--randomized-champion-image-width] flex-col"
                 ref={reelRef!}
@@ -101,7 +110,12 @@ function App() {
             </div>
             <button
               onClick={onClickRandomizeButton}
-              class="mt-4 h-11 w-full rounded-md bg-primary/60 px-8 text-lg font-medium"
+              class={cn(
+                "mt-4 h-16 w-full rounded-md bg-primary/60 px-8 text-lg font-medium transition-colors",
+                {
+                  "bg-gray-500": !appStoreState.canRandomize()
+                }
+              )}
             >
               Randomize
             </button>

@@ -21,6 +21,8 @@ let randomizedChampion: () => Champion | undefined;
 // eslint-disable-next-line prefer-const
 let previousChampion: () => Champion | undefined;
 // eslint-disable-next-line prefer-const
+let canRandomize: () => boolean;
+// eslint-disable-next-line prefer-const
 let selectedChampions: () => Champion[];
 
 const [appStoreState, setAppStoreState] = createStore({
@@ -34,6 +36,9 @@ const [appStoreState, setAppStoreState] = createStore({
   },
   get previousChampion() {
     return previousChampion;
+  },
+  get canRandomize() {
+    return canRandomize;
   },
   get selectedChampions() {
     return selectedChampions();
@@ -52,6 +57,15 @@ previousChampion = createMemo(() => {
   return appStoreState.champions.find(
     (champion) => champion.id === appStoreState.previousChampionId
   );
+});
+
+// eslint-disable-next-line solid/reactivity
+canRandomize = createMemo(() => {
+  const choices = filterChampions(appStoreState.champions, {
+    removed: false,
+    disabled: false
+  });
+  return choices.length > 0;
 });
 
 // eslint-disable-next-line solid/reactivity
