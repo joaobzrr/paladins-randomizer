@@ -7,6 +7,7 @@ import {
   Show,
   type Component
 } from "solid-js";
+import { AiOutlineInfoCircle, AiFillGithub } from 'solid-icons/ai'
 import { Image, ImageProps } from "@/components/image";
 import { Skeleton } from "@/components/skeleton";
 import { filterChampions } from "@/lib/champions";
@@ -89,36 +90,52 @@ function App() {
         <div class="flex h-[832px] items-start gap-x-8">
           <ChampionList champions={excludedChampions()} title="Out" />
           <ChampionList champions={includedChampions()} title="Pool" />
-          <div class="mb-4 rounded-md bg-primary/10 p-4">
-            <div class="mb-2 flex w-full items-center justify-between">
-              <h2 class="text-2xl font-bold">
-                {appStoreState.randomizedChampion()?.name ?? "None"}
-              </h2>
-            </div>
-            <div class="h-[--randomized-champion-image-width] w-[--randomized-champion-image-width] overflow-hidden rounded-md">
-              <div
-                class="flex -translate-y-[--randomized-champion-image-width] flex-col"
-                ref={reelRef!}
-              >
-                <RandomizedChampionImage
-                  champion={appStoreState.previousChampion()}
-                />
-                <RandomizedChampionImage
-                  champion={appStoreState.randomizedChampion()}
-                />
+          <div>
+            <div class="bg-primary/10 p-4 rounded-md mb-4">
+              <div class="mb-2 flex w-full items-center justify-between">
+                <h2 class="text-2xl font-bold">
+                  {appStoreState.randomizedChampion()?.name ?? "None"}
+                </h2>
               </div>
+              <div class="h-[--randomized-champion-image-width] w-[--randomized-champion-image-width] overflow-hidden rounded-md">
+                <div
+                  class="flex -translate-y-[--randomized-champion-image-width] flex-col"
+                  ref={reelRef!}
+                >
+                  <RandomizedChampionImage
+                    champion={appStoreState.previousChampion()}
+                  />
+                  <RandomizedChampionImage
+                    champion={appStoreState.randomizedChampion()}
+                  />
+                </div>
+              </div>
+              <button
+                onClick={onClickRandomizeButton}
+                class={cn(
+                  "mt-4 h-16 w-full rounded-md bg-primary/60 px-8 text-lg font-medium transition-colors",
+                  {
+                    "bg-gray-500": !appStoreState.canRandomize()
+                  }
+                )}
+              >
+                Randomize
+              </button>
             </div>
-            <button
-              onClick={onClickRandomizeButton}
-              class={cn(
-                "mt-4 h-16 w-full rounded-md bg-primary/60 px-8 text-lg font-medium transition-colors",
-                {
-                  "bg-gray-500": !appStoreState.canRandomize()
-                }
-              )}
-            >
-              Randomize
-            </button>
+            <div>
+              <p class="mb-2 min-w-full max-w-min text-sm leading-8">
+                <AiOutlineInfoCircle class="inline-block w-5 h-5" /> Hold <span class="rounded-md bg-gray-700 px-2 py-1 text-sm text-xs font-bold">Ctrl</span> to enter enable/disable mode and/or hold <span class="rounded-md bg-gray-700 px-2 py-1 text-sm text-xs font-bold">Shift</span> to select champions by class.
+              </p>
+              <p>
+                <AiFillGithub class="mr-1 inline-block w-5 h-5" />
+                <a
+                  href="https://github.com/joaobzrr/paladins-randomizer"
+                  class="mb-4 min-w-full max-w-min text-sm text-primary hover:underline"
+                >
+                  joaobzrr/paladins-randomizer
+                </a>
+              </p>
+            </div>
           </div>
         </div>
       </div>
