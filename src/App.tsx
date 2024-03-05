@@ -3,17 +3,24 @@ import {
   onCleanup,
   createMemo,
   splitProps,
-  For,
   Show,
+  For,
+  Switch,
+  Match,
   type Component
 } from "solid-js";
-import { AiOutlineInfoCircle, AiFillGithub } from 'solid-icons/ai'
+import { AiOutlineInfoCircle, AiFillGithub } from "solid-icons/ai";
 import { Image, ImageProps } from "@/components/image";
 import { Skeleton } from "@/components/skeleton";
 import { filterChampions } from "@/lib/champions";
 import { cn, makeAssetURL } from "@/lib/utils";
 import { Champion } from "@/types";
 import { useAppStore, StoreProvider } from "./store";
+
+import DamageIcon from "@/assets/svg/ChampionClass_Damage_Icon.svg?component-solid";
+import FlankIcon from "@/assets/svg/ChampionClass_Flank_Icon.svg?component-solid";
+import FrontlineIcon from "@/assets/svg/ChampionClass_Frontline_Icon.svg?component-solid";
+import SupportIcon from "@/assets/svg/ChampionClass_Support_Icon.svg?component-solid";
 
 function App() {
   const [appStoreState, appStoreActions] = useAppStore();
@@ -91,11 +98,33 @@ function App() {
           <ChampionList champions={excludedChampions()} title="Out" />
           <ChampionList champions={includedChampions()} title="Pool" />
           <div>
-            <div class="bg-primary/10 p-4 rounded-md mb-4">
+            <div class="mb-4 rounded-md bg-primary/10 p-4">
               <div class="mb-2 flex w-full items-center justify-between">
                 <h2 class="text-2xl font-bold">
                   {appStoreState.randomizedChampion()?.name ?? "None"}
                 </h2>
+                <Switch>
+                  <Match
+                    when={appStoreState.randomizedChampion()?.classId === "1"}
+                  >
+                    <DamageIcon class="h-7 w-7 fill-current" />
+                  </Match>
+                  <Match
+                    when={appStoreState.randomizedChampion()?.classId === "2"}
+                  >
+                    <FlankIcon class="h-7 w-7 fill-current" />
+                  </Match>
+                  <Match
+                    when={appStoreState.randomizedChampion()?.classId === "3"}
+                  >
+                    <FrontlineIcon class="h-7 w-7 fill-current" />
+                  </Match>
+                  <Match
+                    when={appStoreState.randomizedChampion()?.classId === "4"}
+                  >
+                    <SupportIcon class="h-7 w-7 fill-current" />
+                  </Match>
+                </Switch>
               </div>
               <div class="h-[--randomized-champion-image-width] w-[--randomized-champion-image-width] overflow-hidden rounded-md">
                 <div
@@ -124,10 +153,18 @@ function App() {
             </div>
             <div>
               <p class="mb-2 min-w-full max-w-min text-sm leading-8">
-                <AiOutlineInfoCircle class="inline-block w-5 h-5" /> Hold <span class="rounded-md bg-gray-700 px-2 py-1 text-sm text-xs font-bold">Ctrl</span> to enter enable/disable mode and/or hold <span class="rounded-md bg-gray-700 px-2 py-1 text-sm text-xs font-bold">Shift</span> to select champions by class.
+                <AiOutlineInfoCircle class="inline-block h-5 w-5" /> Hold{" "}
+                <span class="rounded-md bg-gray-700 px-2 py-1 text-sm text-xs font-bold">
+                  Ctrl
+                </span>{" "}
+                to enter enable/disable mode and/or hold{" "}
+                <span class="rounded-md bg-gray-700 px-2 py-1 text-sm text-xs font-bold">
+                  Shift
+                </span>{" "}
+                to select champions by class.
               </p>
               <p>
-                <AiFillGithub class="mr-1 inline-block w-5 h-5" />
+                <AiFillGithub class="mr-1 inline-block h-5 w-5" />
                 <a
                   href="https://github.com/joaobzrr/paladins-randomizer"
                   class="mb-4 min-w-full max-w-min text-sm text-primary hover:underline"
