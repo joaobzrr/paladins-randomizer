@@ -11,7 +11,7 @@
 
     --grid-columns: 6;
     --grid-image-width: 68px;
-    --grid-button-padding: 3px;
+    --grid-button-padding: 2px;
     --grid-button-border-width: 2px;
     --grid-button-width: calc(
       var(--grid-image-width) + var(--grid-button-padding) * 2 +
@@ -21,6 +21,8 @@
     --grid-button-overlay-padding: calc(
       var(--grid-button-padding) - var(--grid-button-border-width)
     );
+
+    --randomized-champion-image-width: 256px;
   }
 
   * {

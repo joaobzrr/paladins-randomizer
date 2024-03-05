@@ -1,18 +1,16 @@
-import { Component, type JSX } from "solid-js";
+import { splitProps, type Component, type JSX } from "solid-js";
 import { cn } from "@/lib/utils";
 
 export const Skeleton: Component<{
   class?: string;
-  classList?: Record<string, boolean | undefined>;
   style?: JSX.CSSProperties;
 }> = (props) => {
+  const [custom, rest] = splitProps(props, ["class"]);
+
   return (
     <div
-      class={cn(
-        "h-full w-full animate-pulse rounded-md bg-gray-700/60",
-        props.class
-      )}
-      {...props}
+      class={cn("animate-pulse rounded-md bg-gray-700/60", custom.class)}
+      {...rest}
     />
   );
 };

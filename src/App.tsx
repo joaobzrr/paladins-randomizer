@@ -5,10 +5,9 @@ import {
   splitProps,
   For,
   Show,
-  type Component,
-  type JSX
+  type Component
 } from "solid-js";
-import { Image } from "@/components/image";
+import { Image, ImageProps } from "@/components/image";
 import { Skeleton } from "@/components/skeleton";
 import { filterChampions } from "@/lib/champions";
 import { cn, makeAssetURL } from "@/lib/utils";
@@ -76,6 +75,32 @@ function App() {
         <div class="flex h-[832px] items-start gap-x-8">
           <ChampionList champions={excludedChampions()} title="Out" />
           <ChampionList champions={includedChampions()} title="Pool" />
+          <div class="mb-4 rounded-md bg-primary/10 p-4">
+            <div class="h-[--randomized-champion-image-width] w-[--randomized-champion-image-width]">
+              <Show
+                when={!!appStoreState.randomizedChampion()}
+                fallback={
+                  <Image
+                    src={makeAssetURL("images", "Champion_Default_Icon.webp")}
+                    fallback={<Skeleton class="h-full w-full rounded-md" />}
+                    class="h-full w-full rounded-md"
+                  />
+                }
+              >
+                <ChampionImage
+                  champion={appStoreState.randomizedChampion()!}
+                  fallback={<Skeleton class="h-full w-full rounded-md" />}
+                  class="h-full w-full"
+                />
+              </Show>
+            </div>
+            <button
+              onClick={() => appStoreActions.randomizeChampion()}
+              class="mt-4 h-11 w-full rounded-md bg-primary/60 px-8 text-lg font-medium"
+            >
+              Randomize
+            </button>
+          </div>
         </div>
       </div>
     </StoreProvider>
@@ -154,44 +179,43 @@ const ChampionButton: Component<{ champion: Champion }> = (props) => {
 
   return (
     <button
-      class="relative h-full w-full p-[--grid-button-padding]"
+      class="h-full w-full p-[--grid-button-padding]"
       onMouseDown={handleMouseDown}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
       <div
-        class={cn("rounded-md border-[length:--grid-button-border-width]", {
+        class={cn(" rounded-md border-[length:--grid-button-border-width]", {
           "border-red-500": selected() && appStoreState.keyboardState.ctrl,
           "border-primary": selected() && !appStoreState.keyboardState.ctrl,
           "border-transparent": !selected()
         })}
       >
-        <ChampionImage
-          champion={props.champion}
-          class={cn("rounded-md transition-[filter]", {
-            grayscale: props.champion.disabled
-          })}
-        />
+        <div class="h-[--grid-image-width] w-[--grid-image-width]">
+          <ChampionImage
+            champion={props.champion}
+            fallback={<Skeleton class="h-full w-full rounded-md" />}
+            class={cn("h-full w-full transition-[filter]", {
+              grayscale: props.champion.disabled
+            })}
+          />
+        </div>
       </div>
     </button>
   );
 };
 
-type ChampionImageProps = {
+type ChampionImageProps = Omit<ImageProps, "src"> & {
   champion: ChampionRow;
-  class?: string;
-  classList?: Record<string, boolean | undefined>;
-  style?: JSX.CSSProperties;
 };
 
 const ChampionImage: Component<ChampionImageProps> = (props) => {
-  const [custom, rest] = splitProps(props, ["champion"]);
+  const [custom, rest] = splitProps(props, ["champion", "class"]);
   return (
     <Image
-      fallback={<Skeleton />}
       src={makeAssetURL("images", custom.champion.imagePath)}
       alt={custom.champion.name}
-      class={cn("rounded-md", props.class)}
+      class={cn(custom.class, "select-none rounded-md")}
       {...rest}
     />
   );

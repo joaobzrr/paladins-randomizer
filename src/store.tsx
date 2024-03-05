@@ -14,17 +14,31 @@ import {
 import { filterChampions } from "@/lib/champions";
 import { champions as championData } from "@/data/champions.json";
 import { Champion } from "@/types";
+import { choose } from "./lib/utils";
 
+// eslint-disable-next-line prefer-const
+let randomizedChampion: () => Champion | undefined;
 // eslint-disable-next-line prefer-const
 let selectedChampions: () => Champion[];
 
 const [appStoreState, setAppStoreState] = createStore({
   champions: sortChampionRows(championData).map((row) => makeChampion(row)),
+  randomizedChampionId: undefined as string | undefined,
   hoveredChampionId: undefined as string | undefined,
   keyboardState: { ctrl: false, shift: false },
+  get randomizedChampion() {
+    return randomizedChampion;
+  },
   get selectedChampions() {
     return selectedChampions();
   }
+});
+
+// eslint-disable-next-line solid/reactivity
+randomizedChampion = createMemo(() => {
+  return appStoreState.champions.find(
+    (champion) => champion.id === appStoreState.randomizedChampionId
+  );
 });
 
 // eslint-disable-next-line solid/reactivity
@@ -51,6 +65,14 @@ selectedChampions = createMemo(() => {
 });
 
 const appStoreActions = {
+  randomizeChampion: () => {
+    const choices = filterChampions(appStoreState.champions, {
+      removed: false,
+      disabled: false
+    });
+    const pickedChampion = choose(choices);
+    setAppStoreState("randomizedChampionId", pickedChampion?.id);
+  },
   shiftChampionById: (championId: string, removed: boolean) => {
     setAppStoreState(
       "champions",

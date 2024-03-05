@@ -4,7 +4,7 @@ import {
   mergeProps,
   splitProps,
   Suspense,
-  Component,
+  type Component,
   type JSX,
   type ComponentProps
 } from "solid-js";

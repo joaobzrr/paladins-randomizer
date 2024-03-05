@@ -20,9 +20,6 @@ module.exports = {
           "0%, 100%": { opacity: 0.4 },
           "50%": { opacity: 1 }
         }
-      },
-      animation: {
-        pulse: "pulse 1.5s linear infinite"
       }
     },
   },
