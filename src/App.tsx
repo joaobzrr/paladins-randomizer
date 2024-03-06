@@ -289,6 +289,7 @@ const RandomizedChampionImage: Component<RandomizedChampionImageProps> = (
         fallback={
           <Image
             src={makeAssetURL("images", "Champion_Default_Icon.webp")}
+            alt="No Champion Randomized"
             fallback={<Skeleton class="h-full w-full rounded-md" />}
             class="h-full w-full rounded-md"
           />
