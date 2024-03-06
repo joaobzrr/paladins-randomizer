@@ -207,6 +207,13 @@ const ChampionList: Component<ChampionListProps> = (props) => {
 
 const ChampionButton: Component<{ champion: Champion }> = (props) => {
   const [appStoreState, appStoreActions] = useAppStore();
+  const {
+    toggleChampionById,
+    toggleChampionsByClassId,
+    shiftChampionById,
+    shiftChampionsByClassId,
+    updateHoveredChampion
+  } = appStoreActions;
 
   const selected = createMemo(() => {
     return appStoreState.selectedChampions.includes(props.champion);
@@ -215,39 +222,33 @@ const ChampionButton: Component<{ champion: Champion }> = (props) => {
   const handleMouseDown = (event: MouseEvent) => {
     if (event.button !== 0) return;
 
-    if (appStoreState.keyboardState.ctrl) {
-      if (appStoreState.keyboardState.shift) {
-        appStoreActions.toggleChampionsByClassId(
-          props.champion.classId,
-          !props.champion.disabled
-        );
+    const { keyboardState } = appStoreState;
+    // eslint-disable-next-line solid/reactivity
+    const { champion } = props;
+
+    if (keyboardState.ctrl) {
+      if (keyboardState.shift) {
+        toggleChampionsByClassId(champion.classId, !champion.disabled);
       } else {
-        appStoreActions.toggleChampionById(
-          props.champion.id,
-          !props.champion.disabled
-        );
+        toggleChampionById(champion.id, !champion.disabled);
       }
     } else {
       if (appStoreState.keyboardState.shift) {
-        appStoreActions.shiftChampionsByClassId(
-          props.champion.classId,
-          !props.champion.removed
-        );
+        shiftChampionsByClassId(champion.classId, !champion.removed);
       } else {
-        appStoreActions.shiftChampionById(
-          props.champion.id,
-          !props.champion.removed
-        );
+        shiftChampionById(champion.id, !champion.removed);
       }
+      // @Note Prevent invalid selection
+      updateHoveredChampion(undefined);
     }
   };
 
   const handleMouseEnter = () => {
-    appStoreActions.updateHoveredChampion(props.champion.id);
+    updateHoveredChampion(props.champion.id);
   };
 
   const handleMouseLeave = () => {
-    appStoreActions.updateHoveredChampion(undefined);
+    updateHoveredChampion(undefined);
   };
 
   return (
