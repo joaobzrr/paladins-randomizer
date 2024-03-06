@@ -105,22 +105,28 @@ function App() {
                 </h2>
                 <Switch>
                   <Match
-                    when={appStoreState.randomizedChampion()?.classId === "1"}
+                    when={
+                      appStoreState.randomizedChampion()?.class === "Damage"
+                    }
                   >
                     <DamageIcon class="h-7 w-7 fill-current" />
                   </Match>
                   <Match
-                    when={appStoreState.randomizedChampion()?.classId === "2"}
+                    when={appStoreState.randomizedChampion()?.class === "Flank"}
                   >
                     <FlankIcon class="h-7 w-7 fill-current" />
                   </Match>
                   <Match
-                    when={appStoreState.randomizedChampion()?.classId === "3"}
+                    when={
+                      appStoreState.randomizedChampion()?.class === "Frontline"
+                    }
                   >
                     <FrontlineIcon class="h-7 w-7 fill-current" />
                   </Match>
                   <Match
-                    when={appStoreState.randomizedChampion()?.classId === "4"}
+                    when={
+                      appStoreState.randomizedChampion()?.class === "Support"
+                    }
                   >
                     <SupportIcon class="h-7 w-7 fill-current" />
                   </Match>
@@ -205,9 +211,9 @@ const ChampionButton: Component<{ champion: Champion }> = (props) => {
   const [appStoreState, appStoreActions] = useAppStore();
   const {
     toggleChampionById,
-    toggleChampionsByClassId,
+    toggleChampionsByClass,
     shiftChampionById,
-    shiftChampionsByClassId,
+    shiftChampionsByClass,
     updateHoveredChampion
   } = appStoreActions;
 
@@ -224,13 +230,13 @@ const ChampionButton: Component<{ champion: Champion }> = (props) => {
 
     if (keyboardState.ctrl) {
       if (keyboardState.shift) {
-        toggleChampionsByClassId(champion.classId, !champion.disabled);
+        toggleChampionsByClass(champion.class, !champion.disabled);
       } else {
         toggleChampionById(champion.id, !champion.disabled);
       }
     } else {
       if (appStoreState.keyboardState.shift) {
-        shiftChampionsByClassId(champion.classId, !champion.removed);
+        shiftChampionsByClass(champion.class, !champion.removed);
       } else {
         shiftChampionById(champion.id, !champion.removed);
       }

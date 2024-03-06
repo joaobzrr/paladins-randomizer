@@ -6,15 +6,18 @@ import {
   type JSX
 } from "solid-js";
 import { createStore } from "solid-js/store";
-import {
-  makeChampion,
-  findChampionById,
-  sortChampionRows
-} from "@/lib/champions";
-import { filterChampions } from "@/lib/champions";
+import { choose } from "@/lib/utils";
 import { champions as championData } from "@/data/champions.json";
 import { Champion } from "@/types";
-import { choose } from "./lib/utils";
+import {
+  getFromLocalStorage,
+  saveToLocalStorage,
+  saveChampionState,
+  filterChampions,
+  sortChampions,
+  findChampionById,
+  makeChampion
+} from "./utils";
 
 // eslint-disable-next-line prefer-const
 let randomizedChampion: () => Champion | undefined;
@@ -25,12 +28,33 @@ let canRandomize: () => boolean;
 // eslint-disable-next-line prefer-const
 let selectedChampions: () => Champion[];
 
+const createInitialStoreState = () => {
+  let champions = championData.map((row) => makeChampion(row));
+  const savedChampionState = getFromLocalStorage("championState");
+  if (savedChampionState) {
+    champions = champions.map((champion) => {
+      const state = savedChampionState.find(({ id }) => id === champion.id);
+      return { ...champion, ...state };
+    });
+  }
+  champions = sortChampions(champions);
+
+  const randomizedChampionId = getFromLocalStorage("randomizedChampionId");
+  const previousChampionId = undefined as string | undefined;
+  const hoveredChampionId = undefined as string | undefined;
+  const keyboardState = { ctrl: false, shift: false };
+
+  return {
+    champions,
+    randomizedChampionId,
+    previousChampionId,
+    hoveredChampionId,
+    keyboardState
+  };
+};
+
 const [appStoreState, setAppStoreState] = createStore({
-  champions: sortChampionRows(championData).map((row) => makeChampion(row)),
-  randomizedChampionId: undefined as string | undefined,
-  previousChampionId: undefined as string | undefined,
-  hoveredChampionId: undefined as string | undefined,
-  keyboardState: { ctrl: false, shift: false },
+  ...createInitialStoreState(),
   get randomizedChampion() {
     return randomizedChampion;
   },
@@ -84,7 +108,7 @@ selectedChampions = createMemo(() => {
 
   if (appStoreState.keyboardState.shift) {
     return filterChampions(appStoreState.champions, {
-      classId: hoveredChampion.classId,
+      class: hoveredChampion.class,
       ...(!appStoreState.keyboardState.ctrl && {
         removed: hoveredChampion.removed
       })
@@ -104,6 +128,7 @@ const appStoreActions = {
     const previousChampionId = appStoreState.randomizedChampionId;
     const randomizedChampionId = pickedChampion?.id;
     setAppStoreState({ previousChampionId, randomizedChampionId });
+    saveToLocalStorage("randomizedChampionId", randomizedChampionId);
   },
   shiftChampionById: (championId: string, removed: boolean) => {
     setAppStoreState(
@@ -112,14 +137,16 @@ const appStoreActions = {
       "removed",
       removed
     );
+    saveChampionState(appStoreState.champions);
   },
-  shiftChampionsByClassId: (classId: string, removed: boolean) => {
+  shiftChampionsByClass: (championClass: string, removed: boolean) => {
     setAppStoreState(
       "champions",
-      (c) => c.classId === classId,
+      (c) => c.class === championClass,
       "removed",
       removed
     );
+    saveChampionState(appStoreState.champions);
   },
   toggleChampionById: (championId: string, disabled: boolean) => {
     setAppStoreState(
@@ -128,14 +155,16 @@ const appStoreActions = {
       "disabled",
       disabled
     );
+    saveChampionState(appStoreState.champions);
   },
-  toggleChampionsByClassId: (classId: string, disabled: boolean) => {
+  toggleChampionsByClass: (championClass: string, disabled: boolean) => {
     setAppStoreState(
       "champions",
-      (c) => c.classId === classId,
+      (c) => c.class === championClass,
       "disabled",
       disabled
     );
+    saveChampionState(appStoreState.champions);
   },
   updateHoveredChampion: (championId: string | undefined) => {
     setAppStoreState("hoveredChampionId", championId);

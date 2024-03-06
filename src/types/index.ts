@@ -8,7 +8,14 @@ export type Champion = ChampionRow & {
 };
 
 export type ChampionFilters = {
-  classId: string;
+  class: string;
   removed: boolean;
   disabled: boolean;
+};
+
+export type ChampionState = Pick<Champion, "id" | "removed" | "disabled">;
+
+export type LocalStorageState = {
+  randomizedChampionId?: string;
+  championState: ChampionState[];
 };
