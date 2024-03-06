@@ -141,12 +141,8 @@ function App() {
               </div>
               <button
                 onClick={onClickRandomizeButton}
-                class={cn(
-                  "mt-4 h-16 w-full rounded-md bg-primary/60 px-8 text-lg font-medium transition-colors",
-                  {
-                    "bg-gray-500": !appStoreState.canRandomize()
-                  }
-                )}
+                disabled={!appStoreState.canRandomize()}
+                class="mt-4 h-16 w-full rounded-md bg-primary/60 px-8 text-lg font-medium transition-colors disabled:cursor-not-allowed disabled:bg-gray-500"
               >
                 Randomize
               </button>
